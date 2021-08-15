@@ -1,0 +1,37 @@
+version: '2'
+services:
+  discord-pigeon:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image:
+      discord-pigeon
+    links:
+      - mongo
+    env_file:
+      - .env
+    environment:
+      MONGODB_HOST: mongo
+      TZ: Asia/Tokyo
+
+  mongo:
+    image: mongo:4.2.3
+    restart: always
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGODB_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_PASSWORD}
+      TZ: Asia/Tokyo
+
+  mongo-express:
+    image: mongo-express:0.54.0
+    restart: always
+    links:
+      - mongo
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGODB_USER}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGODB_PASSWORD}
+      TZ: Asia/Tokyo
