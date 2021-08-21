@@ -1,6 +1,8 @@
 .PHONY:\
 	run-all\
 	run\
+	manual\
+	announce\
 	down\
 	test\
 
@@ -14,6 +16,12 @@ run:
 manual:
 	docker-compose up -d mongo mongo-express
 	poetry run python ./discord_pigeon/main.py -m
+	docker-compose up -d discord-pigeon
+	poetry run python ./discord_pigeon/main.py -l
+
+announce:
+	docker-compose up -d mongo mongo-express
+	poetry run python ./discord_pigeon/main.py -a
 	docker-compose up -d discord-pigeon
 	poetry run python ./discord_pigeon/main.py -l
 

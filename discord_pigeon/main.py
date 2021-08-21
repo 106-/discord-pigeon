@@ -18,6 +18,7 @@ parser.add_argument(
     "-m", "--manual", action="store_true", help="create a `request_vote` job manually."
 )
 parser.add_argument("-l", "--list_jobs", action="store_true", help="shows job list.")
+parser.add_argument("-a", "--announce", action="store_true", help="announce manually.")
 args = parser.parse_args()
 
 logging.basicConfig(
@@ -80,8 +81,8 @@ async def announce():
     msgs = msgs[::-1]
     votes = []
     for msg in msgs:
-        votes = sum(map(lambda x: x.count, msg.reactions))
-        votes.append(votes)
+        votes_num = sum(map(lambda x: x.count, msg.reactions))
+        votes.append(votes_num)
 
     if votes[0] >= votes[1]:
         decision = day
@@ -130,6 +131,10 @@ if __name__ == "__main__":
         now = datetime.datetime.now()
         trigger = DateTrigger(now + datetime.timedelta(seconds=30))
         scheduler.add_job(request_vote, trigger)
+    elif args.announce:
+        now = datetime.datetime.now()
+        trigger = DateTrigger(now + datetime.timedelta(seconds=30))
+        scheduler.add_job(announce, trigger)
     elif args.list_jobs:
         jobs = scheduler.get_jobs()
         for j in jobs:
